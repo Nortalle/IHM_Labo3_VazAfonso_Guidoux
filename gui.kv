@@ -1,0 +1,192 @@
+#:kivy 1.10.1
+
+<GUI>:                                  # Main GUI
+    StackLayout:
+        ActionBar:
+            pos_hint: {'top':1}
+            ActionView:
+                use_separator: True
+                ActionPrevious:
+                    title: ''
+                    size_hint: None, None
+                    size: 0, 0
+                ActionOverflow:
+                ActionGroup:
+                    text: 'File'
+                    ActionButton:
+                        text: 'New'
+                        id: menu_new
+                    ActionButton:
+                        text: 'Open'
+                        id: menu_open
+                    ActionButton:
+                        text: 'Save'
+                        id: menu_save
+                    ActionButton:
+                        text: 'Save as'
+                        id: menu_save_as
+                    ActionButton:
+                        text: 'Exit'
+                        id: menu_exit
+                ActionGroup:
+                    text: 'Edit'
+                    ActionButton:
+                        text: 'Copy'
+                    ActionButton:
+                        text: 'Cut'
+                    ActionButton:
+                        text: 'Paste'
+                ActionGroup:
+                    text: 'Help'
+                    ActionButton:
+                        text: 'Help'
+                        id: menu_help
+                    ActionButton:
+                        text: 'About'
+                        id: menu_about
+        TextInput:
+            id: textpad
+            size_hint: 1, 1
+            text: ''
+
+<LoadDialog>:                           # Dialog allowing to select a file to load
+    BoxLayout:
+        id: load_dlg
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        FileChooserListView:
+            id: filechooser
+            rootpath: '/'
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: 'Cancel'
+                id: btn_cancel
+
+            Button:
+                text: 'Open'
+                id: btn_open
+
+<SaveDialog>:                           # Dialog allowing to select a file to save
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        FileChooserListView:
+            id: filechooser
+            rootpath: '/'
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                id: btn_cancel
+                text: 'Cancel'
+
+            Button:
+                id: btn_save
+                text: 'Save'
+
+<SaveChangesDialog>:                    # Dialog asking whether the user wants to keep the last changes or not
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        Label:
+            text: 'Do you want to save the last modifications?'
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                id: btn_cancel
+                text: 'Cancel'
+
+            Button:
+                id: btn_yes
+                text: 'Yes'
+
+            Button:
+                id: btn_no
+                text: 'No'
+
+
+<AboutDialog>:
+    BoxLayout:
+        id: about_dlg
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+
+        Label:
+            text: 'Laboratoire 3 : Python - Introduction to Kivy with a simple Notepad app'
+            height: 30
+        Label:
+            text: 'Xavier Vaz Afonso et Vincent Guidoux'
+            height: 30
+        Label:
+            text: 'Version 0.0.1'
+            height: 30
+
+<HelpDialog>:
+    BoxLayout:
+        id: help_dlg
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+
+        
+        Label:
+            text: 'File'
+            height: 10
+            font_size: '25sp'
+        Label:
+            text: 'New - create a new document'
+            height: 10
+        Label:
+            text: 'Open - load a saved document'
+            height: 10
+        Label:
+            text: 'Save - save a document'
+            height: 10
+        Label:
+            text: 'Save as - save a document and specify his name'
+            height: 10
+        Label:
+            text: 'Exit - quit the programm'
+            height: 10
+        Label:
+            text: 'Edit'
+            height: 10
+            font_size: '25sp'
+        Label:
+            text: 'Copy - copy the selection'
+            height: 10
+        Label:
+            text: 'Cut - cut the selection'
+            height: 10
+        Label:
+            text: 'Paste - paste the selection'
+            height: 10
+        Label:
+            text: 'Help'
+            height: 10
+            font_size: '25sp'
+        Label:
+            text: 'Help'
+            height: 10
+        Label:
+            text: 'About'
+            height: 10
+        
+
+
