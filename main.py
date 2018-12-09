@@ -7,38 +7,10 @@ from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
 
 # ------------------------------------------------------------------------------
 # Dialogs. Must match kv file
-class LoadDialog(FloatLayout):
-    def __init__(self, on_file_selected, **kwargs):
-        """
-        @param on_file_selected: callback that returns the filename of the selected
-        file
-        """
-        super().__init__(**kwargs)
-        self._filechooser = self.ids.filechooser
-        self._on_file_selected = on_file_selected
-        self._btn_cancel = self.ids.btn_cancel
-        self._btn_cancel.on_release = self._dismiss_popup
-        self._btn_open = self.ids.btn_open
-        self._btn_open.on_release = self._btn_open_clicked
-        self._popup = Popup(title="Open file", content=self, size_hint=(0.8, 0.8))
-
-    def show(self):
-        print("show open")
-        self._popup.open()
-
-    def _dismiss_popup(self):
-        self._popup.dismiss()
-
-    def _btn_open_clicked(self):
-        print("file selected")
-        filename = self._filechooser.selection
-        self._on_file_selected(filename)
-        self._dismiss_popup()
-
-
 class SaveDialog(FloatLayout):
     def __init__(self, on_file_selected, **kwargs):
         """
@@ -110,6 +82,35 @@ class SaveChangesDialog(FloatLayout):
     def _dismiss_popup(self):
         self._popup.dismiss()
 
+class LoadDialog(FloatLayout):
+    def __init__(self, on_file_selected, **kwargs):
+
+        super().__init__(**kwargs)
+        self._filechooser = self.ids.filechooser
+        self._on_file_selected = on_file_selected
+
+        self._btn_cancel = self.ids.btn_cancel
+        self._btn_cancel.on_release = self._dismiss_popup
+
+        self._btn_open = self.ids.btn_open
+        self._btn_open.on_release = self._btn_open_clicked
+
+        self._popup = Popup(title="Open file", content=self, size_hint=(0.8, 0.8))
+
+    def show(self):
+        print("show open")
+        self._popup.open()
+
+    def _dismiss_popup(self):
+        self._popup.dismiss()
+
+    def _btn_open_clicked(self):
+        print("file selected")
+        filename = self._filechooser.selection
+
+        self._on_file_selected(filename)
+        self._dismiss_popup()
+
 class AboutDialog(FloatLayout):
     def __init__(self, **kwargs):
         # Always call the __init__ function of super class
@@ -136,6 +137,8 @@ class HelpDialog(FloatLayout):
 # ------------------------------------------------------------------------------
 # Main GUI
 class GUI(FloatLayout):
+
+    _textpad = ObjectProperty()
     def __init__(self, **kwargs):
         # Always call the __init__ function of super class
         # super(GUI, self).__init__(**kwargs)
@@ -152,9 +155,6 @@ class GUI(FloatLayout):
         self._textpad = self.ids.textpad
         self._textpad.bind(text=lambda obj, value: self.text_modified())
         
-        self._load_dlg = LoadDialog(on_file_selected=self.open_file)
-        self._about_dlg = AboutDialog()
-        self._help_dlg = HelpDialog()
         self._save_dlg = SaveDialog(on_file_selected=self.save_file)
         self._savechanges_dlg = SaveChangesDialog(
             on_yes=self.show_save_file, on_no=self.new_file
@@ -162,13 +162,13 @@ class GUI(FloatLayout):
         self._saveexit_dlg = SaveChangesDialog(
             on_yes=self.show_save_file, on_no=self.exit
         )
+        self._load_dlg = LoadDialog(on_file_selected=self.open_file)
+        self._about_dlg = AboutDialog()
+        self._help_dlg = HelpDialog()
 
     def _init_menu(self):
-        self._menu_new = self.ids.menu_new
-        self._menu_new.on_release = self.show_new_file
 
-        self._menu_open = self.ids.menu_open
-        self._menu_open.on_release = self.show_open_file
+        self.clipboard_text = ""
 
         self._menu_save = self.ids.menu_save
         self._menu_save.on_release = self.show_save_file
@@ -179,11 +179,45 @@ class GUI(FloatLayout):
         self._menu_exit = self.ids.menu_exit
         self._menu_exit.on_release = self.show_exit
 
+        self._menu_new = self.ids.menu_new
+        self._menu_new.on_release = self.show_new_file
+
+        self._menu_open = self.ids.menu_open
+        self._menu_open.on_release = self.show_open_file
+
         self._menu_about = self.ids.menu_about
         self._menu_about.on_release = self.show_about
 
         self._menu_help = self.ids.menu_help
         self._menu_help.on_release = self.show_help
+
+        self._menu_copy = self.ids.menu_copy
+        self._menu_copy.on_release = self.on_copy
+
+        self._menu_cut = self.ids.menu_cut
+        self._menu_cut.on_release = self.on_cut
+
+        self._menu_paste = self.ids.menu_paste
+        self._menu_paste.on_release = self.on_paste
+
+    def on_copy(self):
+
+        if self._textpad.text == "":
+            return
+
+        self.clipboard_text = self._textpad.text
+
+    def on_cut(self):
+
+        self.on_copy()
+        self.on_delete()
+
+    def on_paste(self):
+
+        self._textpad.insert_text(self.clipboard_text)
+
+    def on_delete(self):
+        self._textpad.text = ""
 
     def dismiss_popup(self):
         # Closes the popup (new, save, etc)
@@ -206,6 +240,7 @@ class GUI(FloatLayout):
         # Deletes all the text in the widget
         self._textpad.text = ""
         self.modified = False
+        path_and_file_name = None
 
     def show_open_file(self):
         self._load_dlg.show()

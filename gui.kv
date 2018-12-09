@@ -32,10 +32,13 @@
                     text: 'Edit'
                     ActionButton:
                         text: 'Copy'
+                        id: menu_copy
                     ActionButton:
                         text: 'Cut'
+                        id: menu_cut
                     ActionButton:
                         text: 'Paste'
+                        id: menu_paste
                 ActionGroup:
                     text: 'Help'
                     ActionButton:
@@ -48,27 +51,6 @@
             id: textpad
             size_hint: 1, 1
             text: ''
-
-<LoadDialog>:                           # Dialog allowing to select a file to load
-    BoxLayout:
-        id: load_dlg
-        size: root.size
-        pos: root.pos
-        orientation: 'vertical'
-        FileChooserListView:
-            id: filechooser
-            rootpath: '/'
-
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: 'Cancel'
-                id: btn_cancel
-
-            Button:
-                text: 'Open'
-                id: btn_open
 
 <SaveDialog>:                           # Dialog allowing to select a file to save
     BoxLayout:
@@ -187,6 +169,26 @@
         Label:
             text: 'About'
             height: 10
-        
+
+<LoadDialog>:                                           # same as SaveDialog, almost
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: 'vertical'
+        FileChooserListView:
+            id: filechooser
+            rootpath: '/'
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: 'Cancel'
+                id: btn_cancel
+
+            Button:
+                text: 'Open'
+                id: btn_open
+            
 
 
